@@ -1,0 +1,16 @@
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.RazorAssemblyInfo.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.RazorAssemblyInfo.cs
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.AssemblyInfoInputs.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.AssemblyInfo.cs
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UnitedClubsApi.deps.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UnitedClubsApi.runtimeconfig.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UnitedClubsApi.runtimeconfig.dev.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UnitedClubsApi.dll
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UnitedClubsApi.pdb
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.RazorTargetAssemblyInfo.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.dll
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.pdb
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\appsettings.Development.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\appsettings.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UnitedClubsApi.csprojAssemblyReference.cache

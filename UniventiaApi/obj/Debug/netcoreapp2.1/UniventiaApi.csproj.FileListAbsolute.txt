@@ -1,0 +1,14 @@
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UniventiaApi.deps.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UniventiaApi.runtimeconfig.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UniventiaApi.runtimeconfig.dev.json
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UniventiaApi.dll
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.csprojAssemblyReference.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.csproj.CoreCompileInputs.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.RazorAssemblyInfo.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.RazorAssemblyInfo.cs
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.AssemblyInfoInputs.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.AssemblyInfo.cs
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.RazorTargetAssemblyInfo.cache
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\bin\Debug\netcoreapp2.1\UniventiaApi.pdb
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.dll
+C:\Users\nidou\source\repos\UniventiaApi\UniventiaApi\obj\Debug\netcoreapp2.1\UniventiaApi.pdb

@@ -1,0 +1,243 @@
+﻿using AutoMapper;
+using MongoDB.Driver;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using UnitedClubsApi.DTO;
+using Microsoft.Extensions.Configuration;
+using UnitedClubsApi.IRepository;
+using UnitedClubsApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Net.Mail;
+using System.IO;
+using UnitedClubsApi.Dto;
+using System.Diagnostics;
+
+namespace UnitedClubsApi.Services
+{
+    public class SponsorServices : ISponsorRepository
+    {
+
+        private readonly IMongoCollection<Sponsor> _sponsor;
+
+        private readonly IMapper _mapper;
+
+        public SponsorServices(IConfiguration Config, IMapper mapper)
+        {
+            var client = new MongoClient();
+            _mapper = mapper;
+            var database = client.GetDatabase("UnitedClubsDB");
+            _sponsor = database.GetCollection<Sponsor>("Sponsor");
+
+        }
+
+        private string GenerateToken(Sponsor s)
+        {
+
+            Debug.Write(s.Nom_Sponsor);
+            var token = new JwtSecurityToken(
+                claims: new Claim[] { new Claim(ClaimTypes.Name, s.Nom_Sponsor ), new Claim(ClaimTypes.Role, s.Role) },
+                notBefore: new DateTimeOffset(DateTime.Now).DateTime,
+                expires: new DateTimeOffset(DateTime.Now.AddDays(7)).DateTime,
+                signingCredentials: new SigningCredentials(JwtSettings.SIGNING_KEY, SecurityAlgorithms.HmacSha256)
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+
+        public String SendEmailSponsor(Sponsor s)
+        {
+
+            Random aleatoire = new Random();
+            int Code = aleatoire.Next(10000000, 100000000);
+            MailMessage email = new MailMessage();
+            email.From = new System.Net.Mail.MailAddress("eventiaclub@gmail.com");
+            s.Etat_compte = "" + Code;
+            email.To.Add(new MailAddress(s.Email_Sponsor));
+            email.IsBodyHtml = true;
+            email.Subject = "Confirmation d'adresse éléctronique";
+            email.Body = "Pour terminer la configuration de votre compte , il nous reste à vérifier que cette adresse e-mail est bien la vôtre.Utilisez le code suivant pour vérifier votre adresse \n e - mail :" + Code + "\n Merci,L’équipe d'eventia club";
+
+            System.Net.Mail.SmtpClient smtp = new System.Net.Mail.SmtpClient();
+            smtp.Host = "smtp.gmail.com";
+            smtp.EnableSsl = true;
+            smtp.Credentials = new System.Net.NetworkCredential("eventiaclub@gmail.com", "hello.net");
+            try
+            {
+                smtp.Send(email);
+                return "message envoyé";
+
+            }
+            catch (SmtpException ex)
+            {
+               
+                return ("Probléme d'envoi de mail de vérification" + ex.Message);
+
+            }
+        }
+
+
+        public bool verifPassword(string password, string hash)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hash);
+
+        }
+
+        public Sponsor verifSponsorById(String id)
+
+        {
+            return _sponsor.Find(sponsor => sponsor.Id == id).FirstOrDefault<Sponsor>();
+        }
+
+
+
+        public Sponsor getInformationsSponsor(Sponsor s)
+
+        {
+            Sponsor s1 =_sponsor.Find(sponsor => sponsor.Email_Sponsor == s.Email_Sponsor ).FirstOrDefault<Sponsor>();
+
+            if (verifPassword(s.Mot_de_passe_Sponsor, s1.Mot_de_passe_Sponsor))
+                return s1;
+            return null;
+        }
+
+        public Sponsor verifAccountSponsor(Sponsor s)
+
+        {
+            return _sponsor.Find(sponsor => sponsor.Matricule_Sponsor == s.Matricule_Sponsor || sponsor.Nom_Sponsor == s.Nom_Sponsor || sponsor.Email_Sponsor == s.Email_Sponsor).FirstOrDefault<Sponsor>();
+        }
+
+        public dynamic SignUpSponsor(Sponsor s)
+        {
+
+
+            if (verifAccountSponsor(s) == null)
+            {
+                if (SendEmailSponsor(s) == "message envoyé")
+                {
+                   s.Mot_de_passe_Sponsor = BCrypt.Net.BCrypt.HashPassword(s.Mot_de_passe_Sponsor);
+                    _sponsor.InsertOne(s);
+
+                    return new { response = "Inscription avec succés" };
+                }
+
+                return new { response = "probléme technique Serveur" };
+            }
+
+            return new { response = "vous etes déja inscrit" };
+
+        }
+
+        public dynamic SignInSponsor(SponsorRequestAuthentification s)
+        {
+            Sponsor S = getInformationsSponsor(_mapper.Map<Sponsor>(s));
+
+            if (S == null)
+                return new { response = "vous devez créer tout d'abord un compte ou vérifiez vos informations" };
+            else
+            {
+                if (S.Etat_compte != "verifié")
+                    return new { response = "vous devez saisir le code envoyé à votre courrier éléctornique" };
+                SponsorProfile S1 = _mapper.Map<SponsorProfile>(S);
+                return new { token = GenerateToken(S), response = S1 };
+
+
+            }
+        }
+
+        public dynamic SignInSponsorVerification(SponsorRequestAuthentification s)
+        {
+
+            Sponsor S = getInformationsSponsor(_mapper.Map<Sponsor>(s));
+
+            if (S == null)
+                return new { response = "vous devez créer tout d'abord un compte ou vérifiez vos informations" };
+            else
+            {
+                if (S.Etat_compte == s.Etat_compte)
+                {
+
+                    S.Etat_compte = "verifié";
+                    _sponsor.ReplaceOne(sponsor =>  sponsor.Email_Sponsor == S.Email_Sponsor, S);
+                    SponsorProfile S1 = _mapper.Map<SponsorProfile>(S);
+                    return new { token = GenerateToken(S), response = S1 };
+
+
+                }
+                else
+                    return new { response = "votre code est erroné, vous devez le ressaisir" };
+
+            }
+        }
+
+        public dynamic UpdateSponsor(Sponsor s)
+        {
+
+            Sponsor s1 = verifSponsorById(s.Id);
+
+            if (s1 != null)
+            {
+                if(! verifPassword(s.Mot_de_passe_Sponsor,s1.Mot_de_passe_Sponsor))
+                    s.Mot_de_passe_Sponsor = BCrypt.Net.BCrypt.HashPassword(s.Mot_de_passe_Sponsor);
+                _sponsor.ReplaceOne(sponsor => sponsor.Id == s.Id, s);
+                return new { response = "vos informations sont mis à jour avec succées" };
+            }
+
+            return new { response = "vous devez vérifier vos informations " };
+        }
+
+        public dynamic DeleteSponsor(string id)
+        {
+            if (verifSponsorById(id) != null)
+            {
+
+                _sponsor.DeleteOne(etudiant => etudiant.Id == id);
+                return new { response = "Votre compte est désactivé" };
+            }
+            return new { response = "vous devez vérifier vos informations " };
+        }
+
+
+        public dynamic PokeSponsor(PokeSponsorRequest request)
+        {
+            Sponsor s = verifSponsorById(request.idSponsor);
+            if (s != null)
+            {
+                if(s.pokes == null)
+                  s.pokes = new List<Poke>();
+                s.pokes.Add(new Poke(request.club, request.date));
+
+                _sponsor.ReplaceOne(sponsor => sponsor.Id == s.Id, s);
+
+
+                return new { response = "sponsor poké" };
+            }
+            return new { response = "ponsor inexistant" };
+        }
+
+        public dynamic listerPokeSponsor(string id)
+        {
+            Sponsor s = verifSponsorById(id);
+            if (s != null)
+            {
+     
+                return s.pokes;
+            }
+            return new { response = "ponsor inexistant" };
+        }
+
+
+
+        public List<SponsorProfile> listerTousSponsor()
+        {
+            List<SponsorProfile> sponsors = new List<SponsorProfile>();
+            List<Sponsor> s = _sponsor.Find(sponsor => true).ToList();
+            sponsors = _mapper.Map<List<SponsorProfile>>(s);
+            return sponsors;
+        }
+    }
+}
